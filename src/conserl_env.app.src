@@ -1,0 +1,12 @@
+{application, conserl_env,
+ [
+  {description, ""},
+  {vsn, git},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { conserl_env_app, []}},
+  {env, []}
+ ]}.
