@@ -21,46 +21,46 @@ get_env_returns_index_from_headers() ->
 
   ?assertMatch(#{index := 10}, Actual).
 
-get_env_populates_single_atom_value_into_environment() ->
+get_env_populates_single_atom_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"atom\",\"value\": \"first_value\"}}]"}),
   Actual = conserl_env_http:get_env(),
 
   ?assertMatch(#{index := 10, first_key := first_value}, Actual).
 
-get_env_populates_multiple_atom_values_into_environment() ->
+get_env_populates_multiple_atom_values_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"atom\",\"value\": \"first_value\"}},
                                                                           {\"second_key\": {\"type\": \"atom\",\"value\": \"second_value\"}}]"}),
   Actual = conserl_env_http:get_env(),
 
   ?assertMatch(#{index := 10, first_key := first_value, second_key := second_value}, Actual).
 
-get_env_populates_single_binary_value_into_environment() ->
+get_env_populates_single_binary_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"binary\",\"value\": \"first_value\"}}]"}),
   Actual = conserl_env_http:get_env(),
 
   ?assertMatch(#{index := 10, first_key := <<"first_value">>}, Actual).
 
-get_env_populates_list_binary_values_into_environment() ->
+get_env_populates_list_binary_values_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"atom\",\"value\": \"first_value\"}},
                                                                           {\"buckets\": {\"type\": \"list_of_binaries\",\"value\": [\"bucket1\", \"bucket2\"]}}]"}),
   Actual = conserl_env_http:get_env(),
 
   ?assertMatch(#{index := 10, first_key := first_value, buckets := [<<"bucket1">>, <<"bucket2">>] }, Actual).
 
-get_env_populates_list_strings_values_into_environment() ->
+get_env_populates_list_strings_values_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"atom\",\"value\": \"first_value\"}},
                                                                           {\"buckets\": {\"type\": \"list_of_strings\",\"value\": [\"bucket1\", \"bucket2\"]}}]"}),
   Actual = conserl_env_http:get_env(),
 
   ?assertMatch(#{index := 10, first_key := first_value, buckets := ["bucket1", "bucket2"] }, Actual).
 
-get_env_populates_single_string_value_into_environment() ->
+get_env_populates_single_string_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"string\",\"value\": \"first_value\"}}]"}),
   Actual = conserl_env_http:get_env(),
 
   ?assertMatch(#{index := 10, first_key := "first_value"}, Actual).
 
-get_env_populates_single_integer_value_into_environment() ->
+get_env_populates_single_integer_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[{\"first_key\": {\"type\": \"integer\",\"value\": 10}}]"}),
   Actual = conserl_env_http:get_env(),
 
