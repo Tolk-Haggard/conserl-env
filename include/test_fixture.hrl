@@ -18,7 +18,8 @@
             F =/= teardown, F =/= maybe_call_teardown,
             F =/= maybe_call_function,
             F =/= before, F =/= maybe_call_before,
-            F =/= after_, F =/= maybe_call_after_
+            F =/= after_, F =/= maybe_call_after_,
+            "helper_" =/= string:substr(atom_to_list(F), 1 , 7)
     ]
 }.
 
@@ -48,6 +49,7 @@ maybe_call_function(F, A) ->
 -define( history(Module), ?debugFmt( "History for module ~p:~p~n", [Module, meck:history(Module)] ) ).
 
 -define( stub(M,F,A, ReturnValue), meck:expect( M, F, A, ReturnValue ) ).
+-define( stub(M,F,ReturnFun), meck:expect( M, F, ReturnFun) ).
 -define( seq(S), meck:seq(S) ).
 
 -define( called( M, F, A), ?assert( meck:called( M, F, A ) ) ).
