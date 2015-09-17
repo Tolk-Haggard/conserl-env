@@ -11,5 +11,8 @@
                   "dde759050eff19a1a80fd854d7375174b191665d"}},
        {ibrowse,".*",
                 {git,"git://github.com/cmullaparthi/ibrowse.git",
-                     "ea3305d21f37eced4fac290f64b068e56df7de80"}}]}.
+                     "ea3305d21f37eced4fac290f64b068e56df7de80"}},
+       {jiffy,".*",
+              {git,"git://github.com/davisp/jiffy.git",
+                   "75dd259189b1c1134f4e0c0de667da3dc67590bf"}}]}.
 
