@@ -12,12 +12,14 @@
 get_env() ->
   Uri = build_uri(),
   {ok, _, [{"X-Consul-Index", Index}], Body} = ibrowse:send_req(Uri, ?HEADERS, get),
-  EncodedListOfKVs = jiffy:decode(Body),
-  Env = maps:from_list([ decode_kv(X) || X <- EncodedListOfKVs ]),
+  ListOfKVs = jiffy:decode(Body, [return_maps]),
+  Env = maps:from_list([ decode_kv(X) || X <- ListOfKVs ]),
   Env#{index => list_to_integer(Index)}.
 
-decode_kv({[{Key, {[{<<"type">>, Type},{<<"value">>, Value}]}}]}) ->
-  {binary_to_atom(Key, utf8), decode_consul_values(Type, Value)}.
+decode_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
+  <<"conserl_env/", AppKey/binary>> = Key,
+  #{<<"type">> := Type, <<"value">> := AppValue} = jiffy:decode(base64:decode(Value), [return_maps]),
+  {binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}.
 
 decode_consul_values(<<"binary">>, Value) ->
   Value;
