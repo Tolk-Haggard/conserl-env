@@ -8,5 +8,8 @@
                                     "7a5835029c42b8138325405237ea7e8516a84800"}},
        {meck,".*",
              {git,"git://github.com/eproxus/meck",
-                  "dde759050eff19a1a80fd854d7375174b191665d"}}]}.
+                  "dde759050eff19a1a80fd854d7375174b191665d"}},
+       {ibrowse,".*",
+                {git,"git://github.com/cmullaparthi/ibrowse.git",
+                     "ea3305d21f37eced4fac290f64b068e56df7de80"}}]}.
 
