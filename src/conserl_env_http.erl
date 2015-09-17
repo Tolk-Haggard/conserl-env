@@ -37,8 +37,8 @@ get_env(_Index) ->
   ignored.
 
 -spec index(Environment::map()) -> Index::non_neg_integer().
-index(#{}) ->
-  ignored.
+index(#{index := Index}) ->
+  Index.
 
 build_uri() ->
   {ok, Tld}  = application:get_env(conserl_env, consul_tld,  "local"),
