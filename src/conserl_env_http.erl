@@ -8,7 +8,7 @@
 
 -define(HEADERS, [{"Accept", "application/json"}]).
 
--spec get_env() -> Environment::map().
+-spec get_env() -> {Index::non_neg_integer, [{Application::atom(), Key::atom(), Value::term()}]}.
 get_env() ->
   Uri = build_uri(),
   {ok, _, [{"X-Consul-Index", Index}], Body} = ibrowse:send_req(Uri, ?HEADERS, get),
@@ -39,7 +39,7 @@ decode_consul_values(<<"atom">>, Value) ->
 get_env(_Index) ->
   ignored.
 
--spec index(Environment::map()) -> Index::non_neg_integer().
+-spec index({Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]}) -> Index::non_neg_integer().
 index({Index, []}) ->
   Index.
 
