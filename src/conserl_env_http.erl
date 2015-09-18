@@ -40,7 +40,7 @@ get_env(_Index) ->
   ignored.
 
 -spec index(Environment::map()) -> Index::non_neg_integer().
-index(#{index := Index}) ->
+index({Index, []}) ->
   Index.
 
 build_uri() ->

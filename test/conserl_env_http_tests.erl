@@ -86,4 +86,4 @@ get_env_populates_single_integer_value_into_env_map() ->
   ?assertMatch({10, [{app, first_key, 10}]}, Actual).
 
 index_lens_returns_index() ->
-  ?assertMatch(10, conserl_env_http:index(#{index => 10})).
+  ?assertMatch(10, conserl_env_http:index({10, []})).
