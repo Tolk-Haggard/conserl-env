@@ -2,7 +2,7 @@
 
 -include("test_fixture.hrl").
 
--define(CONSUL_JSON(Key, Value), "{\"CreateIndex\": 10,\"Flags\": 0,\"Key\": \"conserl_env/" ++ Key ++ "\",\"LockIndex\": 0,\"ModifyIndex\": 10,\"Value\": \"" ++ binary_to_list(base64:encode(Value)) ++ "\"}").
+-define(CONSUL_JSON(Key, Value), "{\"CreateIndex\": 10,\"Flags\": 0,\"Key\": \"conserl_env/app/" ++ Key ++ "\",\"LockIndex\": 0,\"ModifyIndex\": 10,\"Value\": \"" ++ binary_to_list(base64:encode(Value)) ++ "\"}").
 
 setup() ->
   ?meck([ibrowse, application], [unstick]),

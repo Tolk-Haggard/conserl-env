@@ -16,8 +16,10 @@ get_env() ->
   Env = maps:from_list([ decode_kv(X) || X <- ListOfKVs ]),
   Env#{index => list_to_integer(Index)}.
 
+% conserl_env/s3head/backend_port
 decode_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
-  <<"conserl_env/", AppKey/binary>> = Key,
+  Tokens = binary:split(Key, <<"/">>, [global]),
+  AppKey = lists:last(Tokens),
   #{<<"type">> := Type, <<"value">> := AppValue} = jiffy:decode(base64:decode(Value), [return_maps]),
   {binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}.
 
