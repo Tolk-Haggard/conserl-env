@@ -13,15 +13,14 @@ get_env() ->
   Uri = build_uri(),
   {ok, _, [{"X-Consul-Index", Index}], Body} = ibrowse:send_req(Uri, ?HEADERS, get),
   ListOfKVs = jiffy:decode(Body, [return_maps]),
-  Env = maps:from_list([ decode_kv(X) || X <- ListOfKVs ]),
-  Env#{index => list_to_integer(Index)}.
+  ListOfAppEnvs = [ decode_kv(X) || X <- ListOfKVs ],
+  {list_to_integer(Index), ListOfAppEnvs}.
 
-% conserl_env/s3head/backend_port
 decode_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
   Tokens = binary:split(Key, <<"/">>, [global]),
-  AppKey = lists:last(Tokens),
+  [<<"conserl_env">>, App, AppKey] = Tokens,
   #{<<"type">> := Type, <<"value">> := AppValue} = jiffy:decode(base64:decode(Value), [return_maps]),
-  {binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}.
+  {binary_to_atom(App, utf8), binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}.
 
 decode_consul_values(<<"binary">>, Value) ->
   Value;

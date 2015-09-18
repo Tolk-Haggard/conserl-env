@@ -21,7 +21,7 @@ get_env_calls_consul_at_correct_address() ->
 get_env_returns_index_from_headers() ->
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10}, Actual).
+  ?assertMatch({10, _}, Actual).
 
 get_env_populates_single_atom_value_into_env_map() ->
   Key = "first_key",
@@ -29,7 +29,7 @@ get_env_populates_single_atom_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(Key, Value) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := first_value}, Actual).
+  ?assertMatch({10, [{app, first_key, first_value}]}, Actual).
 
 get_env_populates_multiple_atom_values_into_env_map() ->
   FirstKey = "first_key",
@@ -39,7 +39,7 @@ get_env_populates_multiple_atom_values_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(FirstKey, FirstValue) ++ "," ++ ?CONSUL_JSON(SecondKey, SecondValue) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := first_value, second_key := second_value}, Actual).
+  ?assertMatch({10, [{app, first_key, first_value}, {app, second_key, second_value}]}, Actual).
 
 get_env_populates_single_binary_value_into_env_map() ->
   Key = "first_key",
@@ -47,7 +47,7 @@ get_env_populates_single_binary_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(Key, Value) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := <<"first_value">>}, Actual).
+  ?assertMatch({10, [{app, first_key, <<"first_value">>}]}, Actual).
 
 get_env_populates_list_binary_values_into_env_map() ->
   FirstKey = "first_key",
@@ -57,7 +57,7 @@ get_env_populates_list_binary_values_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(FirstKey, FirstValue) ++ "," ++ ?CONSUL_JSON(SecondKey, SecondValue) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := first_value, second_key := [<<"bucket1">>, <<"bucket2">>] }, Actual).
+  ?assertMatch({10, [{app, first_key, first_value}, {app, second_key, [<<"bucket1">>, <<"bucket2">>]}]}, Actual).
 
 get_env_populates_list_strings_values_into_env_map() ->
   FirstKey = "first_key",
@@ -67,7 +67,7 @@ get_env_populates_list_strings_values_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(FirstKey, FirstValue) ++ "," ++ ?CONSUL_JSON(SecondKey, SecondValue) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := first_value, second_key := ["bucket1", "bucket2"] }, Actual).
+  ?assertMatch({10, [{app, first_key, first_value}, {app, second_key, ["bucket1", "bucket2"]}]}, Actual).
 
 get_env_populates_single_string_value_into_env_map() ->
   Key = "first_key",
@@ -75,7 +75,7 @@ get_env_populates_single_string_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(Key, Value) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := "first_value"}, Actual).
+  ?assertMatch({10, [{app, first_key, "first_value"}]}, Actual).
 
 get_env_populates_single_integer_value_into_env_map() ->
   Key = "first_key",
@@ -83,7 +83,7 @@ get_env_populates_single_integer_value_into_env_map() ->
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON(Key, Value) ++ "]"}),
   Actual = conserl_env_http:get_env(),
 
-  ?assertMatch(#{index := 10, first_key := 10}, Actual).
+  ?assertMatch({10, [{app, first_key, 10}]}, Actual).
 
 index_lens_returns_index() ->
   ?assertMatch(10, conserl_env_http:index(#{index => 10})).
