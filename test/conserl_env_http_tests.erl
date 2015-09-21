@@ -60,3 +60,11 @@ get_env_calls_conserl_env_poll_set_env_when_complete() ->
 
 index_lens_returns_index() ->
   ?assertMatch(10, conserl_env_http:index({10, []})).
+
+get_env_when_consul_unavailable_should_return_index_passed_in_and_empty_list() -> 
+  ?stub(ibrowse, send_req, 3, {error,{conn_failed,{error,nxdomain}}}),
+
+  conserl_env_http:get_env(13),
+  timer:sleep(5),
+
+  ?called(conserl_env_poller, set_env, [{13, []}]).
