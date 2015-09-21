@@ -9,5 +9,8 @@
                   ibrowse
                  ]},
   {mod, { conserl_env_app, []}},
-  {env, []}
+  {env, [
+        {consul_tld, "ca3.clc"},
+        {consul_key, "conserl_env/s3head"}
+        ]}
  ]}.

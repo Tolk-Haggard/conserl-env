@@ -16,7 +16,7 @@
 
 -define(TIMEOUT, 30000).
 
--spec set_env(Env::map()) -> ok.
+-spec set_env({Index::non_neg_integer(), [{App::atom(), Key::atom(), Value::term()}]}) -> ok.
 set_env(Env) ->
   gen_server:cast(?MODULE, {set_env, Env}).
 
@@ -40,7 +40,7 @@ handle_cast(_Msg, State) ->
   {noreply, State, ?TIMEOUT}.
 
 handle_info(timeout, State = #{index := Index}) ->
-  ok = conserl_env_http:get_env(Index),
+  conserl_env_http:get_env(Index),
   {noreply, State, ?TIMEOUT};
 handle_info(_Info, State) ->
   {noreply, State, ?TIMEOUT}.

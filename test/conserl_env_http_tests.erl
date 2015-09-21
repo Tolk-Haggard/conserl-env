@@ -9,9 +9,9 @@ setup() ->
   ?stub(conserl_env_http_parser, parse_kv, 1, not_used),
   ?stub(conserl_env_poller, set_env, 1, not_used),
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON("{\"type\": \"atom\",\"value\": \"first_value\"}") ++ "]"}),
-  ?stub(application, get_env, fun(conserl_env, consul_tld, "local")       -> {ok, "clc"};
-                                 (conserl_env, consul_port, 8500)         -> {ok, 8500};
-                                 (conserl_env, consul_key, "conserl_env") -> {ok, "conserl_env/app"};
+  ?stub(application, get_env, fun(conserl_env, consul_tld, "local")       -> "clc";
+                                 (conserl_env, consul_port, 8500)         -> 8500;
+                                 (conserl_env, consul_key, "conserl_env") -> "conserl_env/app";
                                  (_, _, _)                                -> {no}
                               end).
 

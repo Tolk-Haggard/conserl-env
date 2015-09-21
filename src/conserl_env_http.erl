@@ -21,17 +21,18 @@ get_env(Index) ->
 
 get_env1(Index) ->
   Uri = build_uri(Index),
-  {ok, _, [{"X-Consul-Index", Index1}], Body} = ibrowse:send_req(Uri, ?HEADERS, get),
+  {ok, _, Headers, Body} = ibrowse:send_req(Uri, ?HEADERS, get),
+  Index1 = proplists:get_value("X-Consul-Index", Headers),
   ListOfKVs = jiffy:decode(Body, [return_maps]),
   ListOfAppEnvs = [ conserl_env_http_parser:parse_kv(X) || X <- ListOfKVs ],
   {list_to_integer(Index1), ListOfAppEnvs}.
 
 -spec index({Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]}) -> Index::non_neg_integer().
-index({Index, []}) ->
+index({Index, _}) ->
   Index.
 
 build_uri(Index) ->
-  {ok, Tld}  = application:get_env(conserl_env, consul_tld,  "local"),
-  {ok, Port} = application:get_env(conserl_env, consul_port, 8500),
-  {ok, Key}  = application:get_env(conserl_env, consul_key,  "conserl_env"),
+  Tld  = application:get_env(conserl_env, consul_tld,  "local"),
+  Port = application:get_env(conserl_env, consul_port, 8500),
+  Key  = application:get_env(conserl_env, consul_key,  "conserl_env"),
   "http://consul.service." ++ Tld ++ ":" ++ integer_to_list(Port) ++ "/v1/kv/" ++ Key ++ "?recurse&index=" ++ integer_to_list(Index).
