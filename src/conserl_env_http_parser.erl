@@ -7,7 +7,7 @@
 -spec parse_kv(KV::map()) -> {App::binary(), AppKey::binary(), Value::term()}.
 parse_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
   Tokens = binary:split(Key, <<"/">>, [global]),
-  [<<"conserl_env">>, App, AppKey] = Tokens,
+  [_, App, AppKey] = Tokens,
   #{<<"type">> := Type, <<"value">> := AppValue} = jiffy:decode(base64:decode(Value), [return_maps]),
   {binary_to_atom(App, utf8), binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}.
 
