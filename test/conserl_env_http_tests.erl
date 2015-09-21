@@ -18,7 +18,7 @@ setup() ->
 get_env_calls_consul_at_correct_address() ->
   conserl_env_http:get_env(),
 
-  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env?recurse", [{"Accept","application/json"}], get]).
+  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env?recurse&index=0", [{"Accept","application/json"}], get]).
 
 get_env_returns_index_from_headers() ->
   Actual = conserl_env_http:get_env(),
@@ -38,6 +38,11 @@ get_env_calls_parser_for_each_kv_from_consul() ->
                  <<"Value">> => <<"dmFsdWUx">>},
 
   ?called(conserl_env_http_parser, parse_kv, [ExpectedKV]).
+
+get_env_calls_consul_at_correct_address_when_index_provided() ->
+  conserl_env_http:get_env(10),
+
+  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env?recurse&index=10", [{"Accept","application/json"}], get]).
 
 
 index_lens_returns_index() ->

@@ -17,15 +17,20 @@ get_env() ->
   {list_to_integer(Index), ListOfAppEnvs}.
 
 -spec get_env(Index::non_neg_integer()) -> Environment::map().
-get_env(_Index) ->
-  ignored.
+get_env(Index) ->
+  Uri = build_uri(Index),
+  {ok, _, [{"X-Consul-Index", _}], _Body} = ibrowse:send_req(Uri, ?HEADERS, get).
+
 
 -spec index({Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]}) -> Index::non_neg_integer().
 index({Index, []}) ->
   Index.
 
 build_uri() ->
+  build_uri(0).
+
+build_uri(Index) ->
   {ok, Tld}  = application:get_env(conserl_env, consul_tld,  "local"),
   {ok, Port} = application:get_env(conserl_env, consul_port, 8500),
   {ok, Key}  = application:get_env(conserl_env, consul_key,  "conserl_env"),
-  "http://consul.service." ++ Tld ++ ":" ++ integer_to_list(Port) ++ "/v1/kv/" ++ Key ++ "?recurse".
+  "http://consul.service." ++ Tld ++ ":" ++ integer_to_list(Port) ++ "/v1/kv/" ++ Key ++ "?recurse&index=" ++ integer_to_list(Index).
