@@ -5,9 +5,9 @@
 -define(CONSUL_JSON(Value), "{\"CreateIndex\": 10,\"Flags\": 0,\"Key\": \"conserl_env/app/key\",\"LockIndex\": 0,\"ModifyIndex\": 10,\"Value\": \"" ++ binary_to_list(base64:encode(Value)) ++ "\"}").
 
 setup() ->
-  ?meck([ibrowse, application], [unstick]),
-  ?meck(conserl_env_http_parser, [non_strict]),
+  ?meck([ibrowse, application, conserl_env_http_parser, conserl_env_poller], [unstick]),
   ?stub(conserl_env_http_parser, parse_kv, 1, not_used),
+  ?stub(conserl_env_poller, set_env, 1, not_used),
   ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON("{\"type\": \"atom\",\"value\": \"first_value\"}") ++ "]"}),
   ?stub(application, get_env, fun(conserl_env, consul_tld, "local")       -> {ok, "clc"};
                                  (conserl_env, consul_port, 8500)         -> {ok, 8500};
@@ -41,27 +41,22 @@ get_env_calls_parser_for_each_kv_from_consul() ->
 
 get_env_with_index_calls_consul_at_correct_address() ->
   conserl_env_http:get_env(10),
+  timer:sleep(5),
 
   ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env?recurse&index=10", [{"Accept","application/json"}], get]).
 
-get_env_with_index_returns_updated_index_from_headers() ->
+get_env_with_index_returns_pid() ->
   Actual = conserl_env_http:get_env(1),
 
-  ?assertMatch({10, _}, Actual).
+  ?assert(is_pid(Actual)).
 
-get_env_with_index_calls_parser_for_each_kv_from_consul() ->
-  ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON("value1") ++ "]"}),
+get_env_calls_conserl_env_poll_set_env_when_complete() ->
+  ?stub(conserl_env_http_parser, parse_kv, 1, kv1),
 
   conserl_env_http:get_env(1),
+  timer:sleep(5),
 
-  ExpectedKV = #{<<"CreateIndex">> => 10,
-                 <<"Flags">> => 0,
-                 <<"Key">> => <<"conserl_env/app/key">>,
-                 <<"LockIndex">> => 0,
-                 <<"ModifyIndex">> => 10,
-                 <<"Value">> => <<"dmFsdWUx">>},
-
-  ?called(conserl_env_http_parser, parse_kv, [ExpectedKV]).
+  ?called(conserl_env_poller, set_env, [{10, [kv1]}]).
 
 index_lens_returns_index() ->
   ?assertMatch(10, conserl_env_http:index({10, []})).
