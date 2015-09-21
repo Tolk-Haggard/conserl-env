@@ -56,3 +56,59 @@ parse_kv_populates_single_integer_value_into_env_map() ->
   Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
 
   ?assertMatch({app, first_key, 10}, Actual).
+
+parse_kv_when_jiffy_throws_returns_bad_value() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"integer\",\"value\": 10",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch(bad_value, Actual).
+
+parse_kv_when_non_list_value_described_as_list_returns_type_mismatch() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"list_of_strings\",\"value\": 100}",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch({app, first_key, type_mismatch}, Actual).
+
+parse_kv_when_non_list_value_described_as_binary_list_returns_type_mismatch() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"list_of_binaries\",\"value\": \"not_a_list\"}",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch({app, first_key, type_mismatch}, Actual).
+
+parse_kv_when_non_integer_value_described_as_integer_returns_type_mismatch() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"integer\",\"value\": \"not_an_integer\"}",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch({app, first_key, type_mismatch}, Actual).
+
+parse_kv_when_non_binary_value_described_as_binary_returns_type_mismatch() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"binary\",\"value\": 230}",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch({app, first_key, type_mismatch}, Actual).
+
+parse_kv_when_non_string_value_described_as_string_returns_type_mismatch() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"string\",\"value\": 230}",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch({app, first_key, type_mismatch}, Actual).
+
+parse_kv_when_non_atom_value_described_as_atom_returns_type_mismatch() ->
+  Key = <<"first_key">>,
+  Value = "{\"type\": \"atom\",\"value\": 230}",
+
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
+
+  ?assertMatch({app, first_key, type_mismatch}, Actual).

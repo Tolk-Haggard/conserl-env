@@ -36,7 +36,8 @@ build_uri(Index) ->
 maybe_parse_response({ok, _, Headers, Body}, _Index) ->
   Index1 = proplists:get_value("X-Consul-Index", Headers),
   ListOfKVs = jiffy:decode(Body, [return_maps]),
-  ListOfAppEnvs = [ conserl_env_http_parser:parse_kv(X) || X <- ListOfKVs ],
+  ListOfAppEnvs = lists:filter(fun(Elem) -> Elem =/= bad_value end,
+                               [ conserl_env_http_parser:parse_kv(X) || X <- ListOfKVs ]),
   {list_to_integer(Index1), ListOfAppEnvs};
 maybe_parse_response(_, Index) ->
   {Index, []}.
