@@ -19,8 +19,10 @@ get_env() ->
 -spec get_env(Index::non_neg_integer()) -> Environment::map().
 get_env(Index) ->
   Uri = build_uri(Index),
-  {ok, _, [{"X-Consul-Index", _}], _Body} = ibrowse:send_req(Uri, ?HEADERS, get).
-
+  {ok, _, [{"X-Consul-Index", Index1}], Body} = ibrowse:send_req(Uri, ?HEADERS, get),
+  ListOfKVs = jiffy:decode(Body, [return_maps]),
+  ListOfAppEnvs = [ conserl_env_http_parser:parse_kv(X) || X <- ListOfKVs ],
+  {list_to_integer(Index1), ListOfAppEnvs}.
 
 -spec index({Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]}) -> Index::non_neg_integer().
 index({Index, []}) ->

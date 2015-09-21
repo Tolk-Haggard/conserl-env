@@ -39,11 +39,29 @@ get_env_calls_parser_for_each_kv_from_consul() ->
 
   ?called(conserl_env_http_parser, parse_kv, [ExpectedKV]).
 
-get_env_calls_consul_at_correct_address_when_index_provided() ->
+get_env_with_index_calls_consul_at_correct_address() ->
   conserl_env_http:get_env(10),
 
   ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env?recurse&index=10", [{"Accept","application/json"}], get]).
 
+get_env_with_index_returns_updated_index_from_headers() ->
+  Actual = conserl_env_http:get_env(1),
+
+  ?assertMatch({10, _}, Actual).
+
+get_env_with_index_calls_parser_for_each_kv_from_consul() ->
+  ?stub(ibrowse, send_req, 3, {ok, status1, [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON("value1") ++ "]"}),
+
+  conserl_env_http:get_env(1),
+
+  ExpectedKV = #{<<"CreateIndex">> => 10,
+                 <<"Flags">> => 0,
+                 <<"Key">> => <<"conserl_env/app/key">>,
+                 <<"LockIndex">> => 0,
+                 <<"ModifyIndex">> => 10,
+                 <<"Value">> => <<"dmFsdWUx">>},
+
+  ?called(conserl_env_http_parser, parse_kv, [ExpectedKV]).
 
 index_lens_returns_index() ->
   ?assertMatch(10, conserl_env_http:index({10, []})).
