@@ -16,8 +16,6 @@ start: compile
 	erl -pa ebin deps/*/ebin -eval "application:ensure_all_started(conserl_env, permanent)."
 tests: rebar
 	$(REBAR) skip_deps=true eunit
-uats: rebar compile
-	$(REBAR) skip_deps=true ct
 
 deps: rebar rebar.config.lock
 	$(REBAR) -C rebar.config.lock get-deps
