@@ -29,4 +29,3 @@ decode_consul_values(<<"atom">>, Value) when is_binary(Value) ->
   binary_to_atom(Value, utf8);
 decode_consul_values(_, _) ->
   type_mismatch.
-

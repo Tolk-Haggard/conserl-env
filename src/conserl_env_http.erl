@@ -33,7 +33,9 @@ build_uri(Index) ->
   Key  = application:get_env(conserl_env, consul_key,  "conserl_env"),
   "http://consul.service." ++ Tld ++ ":" ++ integer_to_list(Port) ++ "/v1/kv/" ++ Key ++ "?recurse&index=" ++ integer_to_list(Index).
 
-maybe_parse_response({ok, _, Headers, Body}, _Index) ->
+maybe_parse_response({ok, _StatusCode, _Headers, []}, Index) ->
+  {Index, []};
+maybe_parse_response({ok, "200", Headers, Body}, _Index) ->
   Index1 = proplists:get_value("X-Consul-Index", Headers),
   ListOfKVs = jiffy:decode(Body, [return_maps]),
   ListOfAppEnvs = lists:filter(fun(Elem) -> Elem =/= bad_value end,
