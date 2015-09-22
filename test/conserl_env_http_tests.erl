@@ -12,13 +12,14 @@ setup() ->
   ?stub(application, get_env, fun(conserl_env, consul_tld, "local")       -> "clc";
                                  (conserl_env, consul_port, 8500)         -> 8500;
                                  (conserl_env, consul_key, "conserl_env") -> "conserl_env/app";
+                                 (conserl_env, consul_timeout_ms, 30000)  -> 12345;
                                  (_, _, _)                                -> {no}
                               end).
 
 get_env_calls_consul_at_correct_address() ->
   conserl_env_http:get_env(),
 
-  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env/app?recurse&index=0", [{"Accept","application/json"}], get]).
+  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env/app?recurse&wait=12345ms&index=0", [{"Accept","application/json"}], get]).
 
 get_env_returns_index_from_headers() ->
   Actual = conserl_env_http:get_env(),
@@ -51,7 +52,7 @@ get_env_with_index_calls_consul_at_correct_address() ->
   conserl_env_http:get_env(10),
   timer:sleep(5),
 
-  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env/app?recurse&index=10", [{"Accept","application/json"}], get]).
+  ?called(ibrowse, send_req, ["http://consul.service.clc:8500/v1/kv/conserl_env/app?recurse&wait=12345ms&index=10", [{"Accept","application/json"}], get]).
 
 get_env_with_index_returns_pid() ->
   Actual = conserl_env_http:get_env(1),

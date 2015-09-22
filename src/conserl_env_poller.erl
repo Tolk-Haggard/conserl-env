@@ -14,7 +14,7 @@
          terminate/2,
          code_change/3]).
 
--define(TIMEOUT, 30000).
+-define(TIMEOUT, application:get_env(conserl_env, consul_timeout_ms, 30000)).
 
 -spec set_env({Index::non_neg_integer(), [{App::atom(), Key::atom(), Value::term()}]}) -> ok.
 set_env(Env) ->

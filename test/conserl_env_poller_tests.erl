@@ -2,14 +2,15 @@
 
 -include("test_fixture.hrl").
 
--define(DEFAULT_TIMEOUT, 30000).
+-define(DEFAULT_TIMEOUT, timeout1).
 
 setup() ->
-  ?meck([conserl_env_http, conserl_env_setter], [non_strict]),
+  ?meck([conserl_env_http, conserl_env_setter, application], [non_strict, unstick]),
   ?stub(conserl_env_http, get_env, 0, environment1),
   ?stub(conserl_env_http, get_env, 1, ok),
   ?stub(conserl_env_http, index, 1, index1),
-  ?stub(conserl_env_setter, set_env, 1, ok).
+  ?stub(conserl_env_setter, set_env, 1, ok),
+  ?stub(application, get_env, 3, timeout1).
 
 init_calls_consul_api() ->
   conserl_env_poller:init([]),
