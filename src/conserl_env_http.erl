@@ -8,11 +8,11 @@
 
 -define(HEADERS, [{"Accept", "application/json"}]).
 
--spec get_env() -> {Index::non_neg_integer, [{Application::atom(), Key::atom(), Value::term()}]}.
+-spec get_env() -> {Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]} | {Index::non_neg_integer(), []}.
 get_env() ->
   get_env1(0).
 
--spec get_env(Index::non_neg_integer()) -> Environment::map().
+-spec get_env(Index::non_neg_integer()) -> pid().
 get_env(Index) ->
   spawn_link(fun() ->
                  Env = get_env1(Index),
