@@ -4,7 +4,8 @@
          set_env/1
         ]).
 
--spec set_env({_Index::non_neg_integer(), [{App::atom(), Key::atom(), Value::term()}]}) -> ok.
-set_env({_, Env}) ->
+-spec set_env(consul_env_http:consul_state()) -> ok.
+set_env(ConsulState) ->
+  Env = conserl_env_http:environment_map(ConsulState),
   [application:set_env(App, Key, Value) || {App, Key, Value} <- Env].
 

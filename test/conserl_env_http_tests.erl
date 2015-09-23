@@ -100,4 +100,7 @@ get_env_when_consul_returns_empty_body_should_return_index_passed_in() ->
   ?called(conserl_env_poller, set_env, [{15, []}]).
 
 index_lens_returns_index() ->
-  ?assertMatch(10, conserl_env_http:index({10, []})).
+  ?assertEqual(10, conserl_env_http:index({10, []})).
+
+environment_map_returns_environment_map_from_consul_state() ->
+  ?assertEqual(the_map, conserl_env_http:environment_map({dontcare, the_map})).

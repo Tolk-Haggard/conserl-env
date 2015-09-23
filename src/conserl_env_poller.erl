@@ -16,7 +16,7 @@
 
 -define(TIMEOUT, application:get_env(conserl_env, consul_timeout_ms, 30000)).
 
--spec set_env({Index::non_neg_integer(), [{App::atom(), Key::atom(), Value::term()}]}) -> ok.
+-spec set_env(Env::consul_env_http:consul_state()) -> ok.
 set_env(Env) ->
   gen_server:cast(?MODULE, {set_env, Env}).
 

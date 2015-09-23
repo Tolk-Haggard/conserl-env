@@ -3,12 +3,16 @@
 -export([
          get_env/0,
          get_env/1,
-         index/1
+         index/1,
+         environment_map/1
         ]).
 
 -define(HEADERS, [{"Accept", "application/json"}]).
+-type environment_map() :: [{Application::atom(), Key::atom(), Value::term()}] | [].
+-opaque consul_state() :: {non_neg_integer(), environment_map() }.
+-export_type([consul_state/0, environment_map/0]).
 
--spec get_env() -> {Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]} | {Index::non_neg_integer(), []}.
+-spec get_env() -> consul_state().
 get_env() ->
   get_env1(0).
 
@@ -23,9 +27,13 @@ get_env1(Index) ->
   Uri = build_uri(Index),
   maybe_parse_response( ibrowse:send_req(Uri, ?HEADERS, get), Index ).
 
--spec index({Index::non_neg_integer(), [{Application::atom(), Key::atom(), Value::term()}]}) -> Index::non_neg_integer().
+-spec index(consul_state()) -> Index::non_neg_integer().
 index({Index, _}) ->
   Index.
+
+-spec environment_map(consul_state()) -> environment_map().
+environment_map({_, Map}) ->
+  Map.
 
 build_uri(Index) ->
   Tld  = application:get_env(conserl_env, consul_tld, "local"),
