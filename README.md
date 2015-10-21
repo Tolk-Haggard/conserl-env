@@ -36,3 +36,13 @@ application "fruit_basket" and used a base key of "grocery_stand", you would set
 ```
 {"type": "list_of_strings", "value": ["apple", "pear", "banana"]}
 ```
+
+As an alternative to adding key/values via the Consul web UI, you can use curl(1) to add/update key-values via the Consiul API:
+
+```
+curl -X PUT http://consul.service.qa3.clc:8500/v1/kv/conserl_env/s3head/dns_host --data '{"type": "string", "value": "63.251.170.211"}'
+```
+```
+curl -X PUT http://consul.service.qa3.clc:8500/v1/kv/conserl_env/s3head/listen_port --data '{"type": "integer", "value": 10405}'
+```
+
