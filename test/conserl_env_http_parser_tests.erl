@@ -35,7 +35,7 @@ parse_kv_handles_malformed_key() ->
 
 parse_kv_when_jiffy_throws_returns_bad_value() ->
   Key = <<"first_key">>,
-  Value = "{\"type\": \"integer\",\"value\": 10",
+  Value = "{[\"type\"]: [\"integer\"[,{{]\"value\": 10",
 
   Actual = conserl_env_http_parser:parse_kv(?CONSUL_KV(Key, Value)),
 
