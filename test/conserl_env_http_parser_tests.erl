@@ -9,6 +9,18 @@
                                  <<"ModifyIndex">> => 10,
                                  <<"Value">> => base64:encode(Value)}).
 
+-define(CONSUL_BAD_KV(Key), #{<<"CreateIndex">> => 10,
+                                 <<"Flags">> => 0,
+                                 <<"Key">> => <<"conserl_env/app/", Key/binary>>,
+                                 <<"LockIndex">> => 0,
+                                 <<"ModifyIndex">> => 10
+                                 }).
+
+parse_kv_handles_missing_value() ->
+  Key = <<"first_key">>,
+  Actual = conserl_env_http_parser:parse_kv(?CONSUL_BAD_KV(Key)),
+  ?assertEqual(Actual, unknown_value).
+
 parse_kv_populates_single_atom_value_into_env_map() ->
   Key = <<"first_key">>,
   Value = "{\"type\": \"atom\",\"value\": \"first_value\"}",

@@ -6,7 +6,9 @@
 
 -spec parse_kv(KV::map()) -> {App::binary(), AppKey::binary(), Value::term()}.
 parse_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
-  kv_checker(Value, binary:split(Key, <<"/">>, [global])).
+  kv_checker(Value, binary:split(Key, <<"/">>, [global]));
+parse_kv(_) ->
+  unknown_value.
 
 kv_checker(_, [_,_]) -> bad_value;
 kv_checker(Value, [_, App, AppKey]) ->
