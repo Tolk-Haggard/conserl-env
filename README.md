@@ -48,4 +48,7 @@ curl -X PUT http://consul.service.qa3.clc:8500/v1/kv/conserl_env/s3head/listen_p
 ```
 curl -X PUT http://consul.service.qa1.clc:8500/v1/kv/conserl_env/s3head/s3_zone --data '{"type": "binary", "value": "os.ctlqa.io"}'
 ```
+```
+curl -X PUT http://consul.service.qa1.clc:8500/v1/kv/conserl_env/s3head/s3_regions --data '{"type": "list_of_binaries", "value": ["useast", "qa", "lab"]}'
+```
 
