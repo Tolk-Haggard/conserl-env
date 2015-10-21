@@ -6,14 +6,18 @@
 
 -spec parse_kv(KV::map()) -> {App::binary(), AppKey::binary(), Value::term()}.
 parse_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
-  Tokens = binary:split(Key, <<"/">>, [global]),
-  [_, App, AppKey] = Tokens,
+  kv_checker(Value, binary:split(Key, <<"/">>, [global])).
+
+kv_checker(_, [_,_]) -> bad_value;
+kv_checker(Value, [_, App, AppKey]) ->
   try jiffy:decode(base64:decode(Value), [return_maps]) of
     #{<<"type">> := Type, <<"value">> := AppValue} ->
       {binary_to_atom(App, utf8), binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}
   catch
     _:_ -> bad_value
-  end.
+  end;
+kv_checker(_, _) ->
+    bad_value.
 
 decode_consul_values(<<"binary">>, Value) when is_binary(Value) ->
   Value;
