@@ -8,7 +8,7 @@
 parse_kv(#{<<"Key">> := Key, <<"Value">> := Value}) ->
   kv_checker(Value, binary:split(Key, <<"/">>, [global]));
 parse_kv(_) ->
-  unknown_value.
+  bad_kv.
 
 kv_checker(Value, [_, App, AppKey]) ->
   try jiffy:decode(base64:decode(Value), [return_maps]) of
@@ -16,7 +16,9 @@ kv_checker(Value, [_, App, AppKey]) ->
       {binary_to_atom(App, utf8), binary_to_atom(AppKey, utf8), decode_consul_values(Type, AppValue)}
   catch
     _:_ -> bad_value
-  end.
+  end;
+kv_checker(_, _) ->
+  bad_key.
 
 decode_consul_values(<<"binary">>, Value) when is_binary(Value) ->
   Value;
