@@ -26,12 +26,12 @@ parse_kv_handles_missing_value() ->
   Key = <<"first_key">>,
   Actual = conserl_env_http_parser:parse_kv(?KV_MISSING_VALUE(Key)),
 
-  ?assertEqual(bad_kv, Actual).
+  ?assertEqual(bad_value, Actual).
 
 parse_kv_handles_malformed_key() ->
   Actual = conserl_env_http_parser:parse_kv(?KV_MALFORMED_KEY(<<"whatever">>)),
 
-  ?assertEqual(bad_key, Actual).
+  ?assertEqual(bad_value, Actual).
 
 parse_kv_when_jiffy_throws_returns_bad_value() ->
   Key = <<"first_key">>,
