@@ -11,6 +11,6 @@
   {mod, { conserl_env_app, []}},
   {env, [
         {consul_tld, "local"},
-        {consul_key, "conserl_env/"}
+        {consul_root, "conserl_env/"}
         ]}
  ]}.

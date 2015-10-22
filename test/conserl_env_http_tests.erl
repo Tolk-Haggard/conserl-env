@@ -11,7 +11,7 @@ setup() ->
   ?stub(ibrowse, send_req, 3, {ok, "200", [{"X-Consul-Index", "10"}], "[" ++ ?CONSUL_JSON("{\"type\": \"atom\",\"value\": \"first_value\"}") ++ "]"}),
   ?stub(application, get_env, fun(conserl_env, consul_tld, "local")       -> "clc";
                                  (conserl_env, consul_port, 8500)         -> 8500;
-                                 (conserl_env, consul_key, "conserl_env") -> "conserl_env/app";
+                                 (conserl_env, consul_root, "conserl_env") -> "conserl_env/app";
                                  (conserl_env, consul_timeout_ms, 30000)  -> 12345;
                                  (_, _, _)                                -> {no}
                               end).
