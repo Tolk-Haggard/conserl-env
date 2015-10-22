@@ -32,6 +32,7 @@ guard :shell do
       output = `#{cmd}`
       if $?.success?
         n "eunit passed for #{suite}", app, :success
+        puts "BOOM_SHAKA_LAKA: eunit passed for #{suite}"
       else
         begin
           if logicMatch = /\/([\w\.]+):(\d+):\s*(.*)$/.match(output)

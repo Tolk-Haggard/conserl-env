@@ -38,7 +38,7 @@ environment_map({_, Map}) ->
 build_uri(Index) ->
   Tld  = application:get_env(conserl_env, consul_tld, "local"),
   Port = application:get_env(conserl_env, consul_port, 8500),
-  Key  = application:get_env(conserl_env, consul_key, "conserl_env"),
+  Key  = application:get_env(conserl_env, consul_root, "conserl_env"),
   Wait = application:get_env(conserl_env, consul_timeout_ms, 30000),
   "http://consul.service." ++ Tld ++ ":" ++ integer_to_list(Port) ++ "/v1/kv/" ++
     Key ++ "?recurse&wait=" ++ integer_to_list(Wait) ++"ms&index=" ++ integer_to_list(Index).
