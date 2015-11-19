@@ -22,6 +22,13 @@
                                  <<"ModifyIndex">> => 10,
                                  <<"Value">> => base64:encode("{\"type\": \"atom\",\"value\": \"first_value\"}")}).
 
+-define(KV_NULL_VALUE, #{<<"CreateIndex">> => 10,
+                                 <<"Flags">> => 0,
+                                 <<"Key">> => <<"conserl_env/app/">>,
+                                 <<"LockIndex">> => 0,
+                                 <<"ModifyIndex">> => 10,
+                                 <<"Value">> => null}).
+
 parse_kv_handles_missing_value() ->
   Key = <<"first_key">>,
   Actual = conserl_env_http_parser:parse_kv(?KV_MISSING_VALUE(Key)),
@@ -30,6 +37,11 @@ parse_kv_handles_missing_value() ->
 
 parse_kv_handles_malformed_key() ->
   Actual = conserl_env_http_parser:parse_kv(?KV_MALFORMED_KEY(<<"whatever">>)),
+
+  ?assertEqual(bad_value, Actual).
+
+parse_kv_handles_null_value() ->
+  Actual = conserl_env_http_parser:parse_kv(?KV_NULL_VALUE),
 
   ?assertEqual(bad_value, Actual).
 
